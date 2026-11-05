@@ -323,27 +323,36 @@ generate_urf() {
                     esac
                 done
                 ;;
-            
-            # Media Size Options
-            *"PageSize/Media Size:"*)
-                IFS=' ' read -r -a media_sizes <<< "$(echo "$line" | awk -F':' '{print $2}' | sed 's/^ *//')"
-                for media_size in "${media_sizes[@]}"; do
-                    case "$media_size" in
-                        *Letter*) add_urf_code "MS_LETTER" ;;
-                        *Legal*) add_urf_code "MS_LEGAL" ;;
-                        *A4*) add_urf_code "MS_A4" ;;
-                        *A3*) add_urf_code "MS_A3" ;;
-                        *A5*) add_urf_code "MS_A5" ;;
-                        *A6*) add_urf_code "MS_A6" ;;
-                        *B5*) add_urf_code "MS_B5" ;;
-                        *Executive*) add_urf_code "MS_EXECUTIVE" ;;
-                        *Tabloid*) add_urf_code "MS_TABLOID" ;;
-                        *4x6*|*4X6*) add_urf_code "MS_4X6" ;;
-                        *5x7*|*5X7*) add_urf_code "MS_5X7" ;;
-                    esac
-                done
-                ;;
-            
+
+                # Media Size Options
+                *"PageSize/Media Size:"*)
+                    IFS=' ' read -r -a media_sizes <<< "$(echo "$line" | awk -F':' '{print $2}' | sed 's/^ *//')"
+
+                    # Always put A4 first if supported
+                    for media_size in "${media_sizes[@]}"; do
+                        case "$media_size" in
+                            *A4*) add_urf_code "MS_A4"; break ;;
+                        esac
+                    done
+
+                    # Add remaining supported paper sizes
+                    for media_size in "${media_sizes[@]}"; do
+                        case "$media_size" in
+                            *Letter*) add_urf_code "MS_LETTER" ;;
+                            *Legal*) add_urf_code "MS_LEGAL" ;;
+                            *A4*) add_urf_code "MS_A4" ;;
+                            *A3*) add_urf_code "MS_A3" ;;
+                            *A5*) add_urf_code "MS_A5" ;;
+                            *A6*) add_urf_code "MS_A6" ;;
+                            *B5*) add_urf_code "MS_B5" ;;
+                            *Executive*) add_urf_code "MS_EXECUTIVE" ;;
+                            *Tabloid*) add_urf_code "MS_TABLOID" ;;
+                            *4x6*|*4X6*) add_urf_code "MS_4X6" ;;
+                            *5x7*|*5X7*) add_urf_code "MS_5X7" ;;
+                        esac
+                    done
+                    ;;
+                    
             # Media Type Options
             *"MediaType/MediaType:"*)
                 IFS=' ' read -r -a media_types <<< "$(echo "$line" | awk -F':' '{print $2}' | sed 's/^ *//')"
