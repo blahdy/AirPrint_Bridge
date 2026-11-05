@@ -428,10 +428,6 @@ resolve_printer() {
     # Get Printer Make and Model
     printer_make_and_model=$(lpoptions -p "$printer_name" | sed -En "s/.*printer-make-and-model=('([^']*)'|([^=]*)) .*/\2\3/p")
 
-    # Force A4 as default paper size
-    lpadmin -p "$printer_name" -o PageSize=A4
-    log "Default paper size set to A4 for $printer_name"
-
     # Generate URF record and capability flags
     generate_urf "$printer_name" || { log "Failed to generate URF for $printer_name"; return 1; }
     urf="$URF"
